@@ -2,17 +2,10 @@
 
 export default function(plugin, change) {
     const { value } = change;
-    const { selection } = value;
-
-    const range = selection.merge({
-        anchorKey: '_selection_key',
-        anchorOffset: 2,
-        focusKey: '_selection_key',
-        focusOffset: 2
-    });
+    const node = value.document.getDescendant("_selection_key");
 
     change
-        .select(range)
+        .moveToStartOfNode(node).moveForward(2)
         .call(plugin.changes.splitListItem)
         .undo();
 

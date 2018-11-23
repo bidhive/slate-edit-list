@@ -22,6 +22,7 @@ describe('slate-edit-list', () => {
 
     tests.forEach((test, index) => {
         if (test[0] === '.' || path.extname(test).length > 0) return;
+
         it(test, () => {
             const plugin = EditList();
 
