@@ -37496,7 +37496,7 @@ var Leaf = function (_React$Component) {
         return React.createElement(
           'span',
           { 'data-slate-zero-width': 'z' },
-          '\uFEFF'
+          '\u200B'
         );
       }
 
@@ -37507,7 +37507,7 @@ var Leaf = function (_React$Component) {
         return React.createElement(
           'span',
           { 'data-slate-zero-width': 'n' },
-          '\uFEFF'
+          '\u200B'
         );
       }
 
@@ -37518,7 +37518,7 @@ var Leaf = function (_React$Component) {
         return React.createElement(
           'span',
           { 'data-slate-zero-width': 'z' },
-          '\uFEFF'
+          '\u200B'
         );
       }
 
@@ -38967,12 +38967,6 @@ var Content = function (_React$Component) {
       var el = void 0;
 
       try {
-        // COMPAT: In Firefox, sometimes the node can be comment which doesn't
-        // have .closest and it crashes.
-        if (target.nodeType === 8) {
-          return false;
-        }
-
         // COMPAT: Text nodes don't have `isContentEditable` property. So, when
         // `target` is a text node use its parent node for check.
         el = target.nodeType === 3 ? target.parentNode : target;
@@ -38987,9 +38981,7 @@ var Content = function (_React$Component) {
 
         throw err;
       }
-
-      var allowEdit = el.isContentEditable || el.closest('[data-slate-void]');
-      return allowEdit && (el === element || el.closest('[data-slate-editor]') === element);
+      return el.isContentEditable && (el === element || el.closest('[data-slate-editor]') === element);
     }, _this.onNativeSelectionChange = throttle(function (event) {
       if (_this.props.readOnly) return;
 
@@ -39918,20 +39910,13 @@ function AfterPlugin() {
    */
 
   function onClick(event, change, editor) {
-    if (editor.props.readOnly) {
-      return true;
-    }
+    if (editor.props.readOnly) return true;
 
     var value = change.value;
     var document = value.document,
         schema = value.schema;
 
     var node = findNode(event.target, value);
-
-    if (!node) {
-      return;
-    }
-
     var ancestors = document.getAncestors(node.key);
     var isVoid = node && (schema.isVoid(node) || ancestors.some(function (a) {
       return schema.isVoid(a);
@@ -40676,9 +40661,7 @@ function BeforePlugin() {
     // This change isn't save into history since only schema is updated.
 
     if (value.schema != editor.schema) {
-      change.withoutSaving(function () {
-        change.setValue({ schema: editor.schema }).normalize();
-      });
+      change.setValue({ schema: editor.schema }, { save: false }).normalize();
     }
 
     debug$6('onChange');
